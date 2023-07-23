@@ -51,20 +51,38 @@ data "archive_file" "zip" {
 
 data "aws_iam_policy_document" "assume_role" {
   statement {
-    effect = "Allow"
-
+    actions = ["sts:AssumeRole"]
+    effect  = "Allow"
     principals {
       type        = "Service"
       identifiers = ["lambda.amazonaws.com"]
     }
-
-    actions = ["sts:AssumeRole"]
   }
 }
 
 resource "aws_iam_role" "iam_for_lambda" {
   name               = "iam_for_lambda"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
+}
+
+resource "aws_iam_role_policy_attachment" "iam_role_policy_attachment_AmazonVPCFullAccess" {
+  role       = aws_iam_role.iam_for_lambda.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonVPCFullAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "iam_role_policy_attachment_AmazonElastiCacheFullAccess" {
+  role       = aws_iam_role.iam_for_lambda.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonElastiCacheFullAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "iam_role_policy_AmazonS3FullAccess" {
+  role       = aws_iam_role.iam_for_lambda.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "iam_role_policy_CloudWatchFullAccess" {
+  role       = aws_iam_role.iam_for_lambda.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchFullAccess"
 }
 
 resource "aws_lambda_function" "lambda_function" {
@@ -75,6 +93,11 @@ resource "aws_lambda_function" "lambda_function" {
   runtime       = "python3.9"
   tags = {
     Name = "POC"
+  }
+
+  vpc_config {
+    subnet_ids         = ["subnet-6bc12c00"]
+    security_group_ids = ["sg-c7c907a3"]
   }
 }
 
