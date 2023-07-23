@@ -1,4 +1,13 @@
-<Run Ec2 cluster and then you can enter below>
+Run EC2 cluster and enter below commands to see redis cluster details
+===========================================================
 sudo apt update
-sudo apt-get install redis
-redis-cli -h clusters3lambdaredistest.fri3lk.clustercfg.use2.cache.amazonaws.com -p 6379
+
+sudo apt-get install redis 
+
+**Below is the primary endpoint of redis cluter --> -h (host) and -p (port)**
+----------------------------------------------------------------------------------------
+
+redis-cli -h rediscluster.fri3lk.ng.0001.use2.cache.amazonaws.com -p 6379 
+
+=================================================================================================================
+1. 
